@@ -35,19 +35,11 @@ class ParrotFeeder(config: ParrotFeederConfig) extends Service {
   private[this] val isShutdown = new AtomicBoolean(false)
 
   private[this] val victims = createVictims()
-  private[this] val parrotJob = new ParrotJob()
-      .setVictims(victims)
-      .setProcessor(config.parser)
-      .setName(config.jobName)
-
-  // arrivalRate trumps concurrency
-  if (config.requestRate != 0 && config.numThreads != 0) {
-    parrotJob.setArrivalRate(config.requestRate)
-  }
-  else {
-    parrotJob.setConcurrency(config.numThreads)
-    parrotJob.setArrivalRate(config.requestRate)
-  }
+  private[this] val parrotJob = new ParrotJob(
+    victims     = victims,
+    processor   = config.parser,
+    name        = config.jobName,
+    arrivalRate = config.requestRate)
 
   private[this] val initializedParrots = mutable.Set[RemoteParrot]()
   private[this] val jobs = mutable.Map[RemoteParrot, ParrotJobRef]()
@@ -255,8 +247,8 @@ class ParrotFeeder(config: ParrotFeederConfig) extends Service {
   }
 
   private[this] def drainServers() {
-    def totalProcessed = cluster.parrots.foldLeft(0.0)((sum, p) => sum + p.getStatus.getTotalProcessed)
-    def queueDepth = cluster.parrots.foldLeft(0.0)((sum, p) => sum + p.getStatus.getQueueDepth)
+    def totalProcessed = cluster.parrots.foldLeft(0.0)((sum, p) => sum + p.getStatus.totalProcessed.getOrElse(0))
+    def queueDepth = cluster.parrots.foldLeft(0.0)((sum, p) => sum + p.getStatus.queueDepth.getOrElse(0))
 
     val maxIterations = config.busyCutoff/config.pollInterval.inMilliseconds
     var counter = 0

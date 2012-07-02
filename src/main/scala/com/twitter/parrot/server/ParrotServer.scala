@@ -28,7 +28,7 @@ import java.util.{List => JList}
 import java.util.concurrent.atomic.AtomicReference
 import xml.{Elem, Node}
 
-trait ParrotServer[Req <: ParrotRequest, Rep] extends ParrotServerService.ServiceIface {
+trait ParrotServer[Req <: ParrotRequest, Rep] extends ParrotServerService.Iface {
   val config: ParrotServerConfig[Req, Rep]
   def createJob(job: ParrotJob): Future[ParrotJobRef]
   def adjustRateForJob(name: String, adjustment: Int): Future[Void]
@@ -81,7 +81,7 @@ class ParrotServerImpl[Req <: ParrotRequest, Rep](val config: ParrotServerConfig
   def createJob(job: ParrotJob): Future[ParrotJobRef] = {
     synchronized {
       if (jobRef.get() == null) {
-        log.info("Creating job named %s", job.getName)
+        log.info("Creating job named %s", job.name)
         job.setCreated(System.currentTimeMillis)
         jobRef.set(job)
         RecordProcessorFactory.getProcessorForJob(job).start(job)

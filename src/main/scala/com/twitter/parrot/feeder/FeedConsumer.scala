@@ -69,8 +69,8 @@ class FeedConsumer(parrot: RemoteParrot) extends Thread {
       success.linesProcessed
     )
 
-    val linesProcessed = success.getLinesProcessed
+    val linesProcessed = success.linesProcessed.getOrElse(0)
     parrot.results.add(new InternalCounter(linesProcessed, request.length - linesProcessed))
-    parrot.queueDepth = success.queueDepth
+    parrot.queueDepth = success.queueDepth.getOrElse(0)
   }
 }

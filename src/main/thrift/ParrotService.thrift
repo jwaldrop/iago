@@ -19,13 +19,10 @@ struct TargetHost {
 struct ParrotJob {
     1: string name;
     2: list<TargetHost> victims;
-    3: map<string, string> headers;
+    3: string processor;
     4: i32 arrivalRate;
-    5: i32 concurrency;
-    6: i32 rampPeriod;
-    7: string processor;
-    8: optional map<string, string> parserArgs;
-    9: optional i64 created;
+    5: optional map<string, string> parserArgs;
+    6: optional i64 created;
 }
 
 struct ParrotStatus {

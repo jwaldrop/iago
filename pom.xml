@@ -110,6 +110,11 @@
       <artifactId>util-logging</artifactId>
       <version>5.2.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>scrooge-runtime_2.9.2</artifactId>
+      <version>3.0.1</version>
+    </dependency>
     <!-- Test -->
     <dependency>
       <groupId>org.scala-tools.testing</groupId>
@@ -240,10 +245,10 @@
             </goals>
             <configuration>
               <thriftGenerators>
-                <thriftGenerator>finagle</thriftGenerator>
+                <thriftGenerator>scrooge</thriftGenerator>
               </thriftGenerators>
               <thriftOpts>
-                <thriftOpt>finagle</thriftOpt>
+                <thriftOpt>scrooge</thriftOpt>
               </thriftOpts>
             </configuration>
           </execution>
@@ -266,9 +271,16 @@
         <configuration>
           <thriftGenerators>
             <thriftGenerator>finagle</thriftGenerator>
+            <thriftGenerator>scrooge</thriftGenerator>
           </thriftGenerators>
+          <thriftNamespaceMappings>
+            <thriftNamespaceMapping>
+              <from>com.twitter.parrot.thrift</from>
+              <to>com.twitter.parrot.thrift</to>
+            </thriftNamespaceMapping>
+          </thriftNamespaceMappings>
           <thriftOpts>
-            <thriftOpt>finagle</thriftOpt>
+            <thriftOpt>--finagle</thriftOpt>
           </thriftOpts>
         </configuration>
       </plugin>

@@ -62,7 +62,7 @@ class ParrotPoller(cluster: ParrotCluster, serverLatch: CountDownLatch) extends 
 
   private[this] def pollParrot(parrot: RemoteParrot) {
     val status = parrot.getStatus
-    parrot.queueDepth = status.queueDepth
+    parrot.queueDepth = status.queueDepth.getOrElse(0)
     log.debug("pollParrot: depth is %f for %s:%d", parrot.queueDepth, parrot.host, parrot.port)
   }
 
